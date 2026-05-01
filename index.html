@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Générateur de Description Vinted — Vends plus vite</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080c;--surface:#111116;--surface2:#1a1a22;--border:rgba(255,255,255,0.07);--accent:#a78bfa;--text:#f0f0f0;--muted:#666;--green:#6ee7b7;--tag-bg:rgba(167,139,250,0.1);--tag-border:rgba(167,139,250,0.25)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hero{padding:70px 24px 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(167,139,250,0.1) 0%,transparent 70%);pointer-events:none}
+.badge{display:inline-block;background:rgba(167,139,250,0.12);color:var(--accent);border:1px solid rgba(167,139,250,0.3);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:24px}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,50px);font-weight:800;line-height:1.05;margin-bottom:16px;letter-spacing:-1px}
+h1 span{color:var(--accent)}
+.hero p{font-size:16px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7;font-weight:300}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 80px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;margin-bottom:14px}
+.card-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px;font-weight:500}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:15px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:border-color 0.2s;-moz-appearance:textfield;resize:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(167,139,250,0.4)}
+.field select option{background:#1a1a22}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tag-opt{padding:7px 14px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:all 0.15s;user-select:none}
+.tag-opt:hover{border-color:rgba(167,139,250,0.3);color:var(--text)}
+.tag-opt.active{background:var(--tag-bg);border-color:var(--accent);color:var(--accent)}
+.btn-generate{width:100%;padding:16px;background:var(--accent);border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#0a0a0f;cursor:pointer;transition:opacity 0.2s;margin-top:4px;letter-spacing:0.5px}
+.btn-generate:hover{opacity:0.88}
+.btn-generate:active{opacity:0.75}
+.result-zone{display:none}
+.result-zone.visible{display:block}
+.description-box{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:20px;font-size:14px;line-height:1.8;color:var(--text);white-space:pre-wrap;min-height:200px;position:relative}
+.copy-btn{position:absolute;top:14px;right:14px;padding:6px 14px;background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:8px;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.copy-btn:hover{background:rgba(167,139,250,0.25)}
+.score-bar{margin:18px 0 10px}
+.score-bar .sb-head{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px}
+.score-bar .sb-head .sc{font-weight:700;color:var(--accent);font-family:'Syne',sans-serif}
+.score-bar .sb-track{height:6px;background:var(--surface2);border-radius:100px;overflow:hidden}
+.score-bar .sb-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--green));transition:width 0.5s}
+.checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.check-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.check-item .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-ok{background:var(--green)}
+.dot-no{background:#ff4d6d}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+@media(max-width:480px){.g2{grid-template-columns:1fr}.checklist{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge">✦ Générateur IA</div>
+  <h1>Descriptions<br><span>qui vendent</span></h1>
+  <p>Générez une description Vinted optimisée en 10 secondes. Plus de temps perdu à rédiger, plus de ventes.</p>
+</div>
+<div class="wrap">
+  <div class="card">
+    <div class="card-title">Votre article</div>
+    <div class="g2">
+      <div class="field"><label>Type d'article</label>
+        <select id="type">
+          <option>Veste / Manteau</option>
+          <option>T-shirt / Haut</option>
+          <option>Pantalon / Jean</option>
+          <option>Robe / Jupe</option>
+          <option>Chaussures</option>
+          <option>Sac / Accessoire</option>
+          <option>Bijou</option>
+          <option>Sport</option>
+          <option>Maison / Déco</option>
+          <option>High-tech</option>
+          <option>Livre</option>
+          <option>Jouet / Enfant</option>
+        </select>
+      </div>
+      <div class="field"><label>Marque</label><input type="text" id="marque" placeholder="ex: Zara, Nike, H&M…" value="Zara"></div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Taille / Mesures</label><input type="text" id="taille" placeholder="ex: 38, M, 42EU…" value="38 / M"></div>
+      <div class="field"><label>Couleur</label><input type="text" id="couleur" placeholder="ex: Noir, Bleu marine…" value="Noir"></div>
+    </div>
+    <div class="field" style="margin-bottom:14px"><label>Matière (optionnel)</label><input type="text" id="matiere" placeholder="ex: 100% coton, polyester…" value="100% coton"></div>
+    <div class="field" style="margin-bottom:14px"><label>État</label>
+      <select id="etat">
+        <option value="neuf avec étiquettes — jamais porté">Neuf avec étiquette</option>
+        <option value="très bon état — porté 2-3 fois seulement" selected>Très bon état</option>
+        <option value="bon état — quelques signes d'usure légers">Bon état</option>
+        <option value="état satisfaisant — usures visibles, prix revu en conséquence">Satisfaisant</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Points forts (sélectionnez tout ce qui s'applique)</div>
+    <div class="tags-wrap" id="points_tags">
+      <div class="tag-opt active" data-val="Sans défaut visible">Sans défaut</div>
+      <div class="tag-opt" data-val="Lavé et repassé">Propre & repassé</div>
+      <div class="tag-opt active" data-val="Vente rapide possible">Vente rapide</div>
+      <div class="tag-opt" data-val="Emballage soigné">Emballage soigné</div>
+      <div class="tag-opt" data-val="Envoi sous 24h">Envoi sous 24h</div>
+      <div class="tag-opt" data-val="Prix négociable">Prix négociable</div>
+      <div class="tag-opt" data-val="Lot possible">Lot possible</div>
+      <div class="tag-opt" data-val="Étiquette d'origine présente">Étiquette présente</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Infos supplémentaires (optionnel)</div>
+    <div class="field"><textarea id="extra" rows="3" placeholder="Ex: Acheté 60€ chez Zara l'an dernier, porté 3 fois. Vendu car changement de taille."></textarea></div>
+  </div>
+
+  <button class="btn-generate" onclick="generate()">Générer la description ✦</button>
+
+  <div class="result-zone" id="result_zone" style="margin-top:14px">
+    <div class="card">
+      <div class="card-title">Description générée</div>
+      <div style="position:relative">
+        <div class="description-box" id="desc_output"></div>
+        <button class="copy-btn" onclick="copyText()">Copier</button>
+      </div>
+
+      <div class="score-bar">
+        <div class="sb-head"><span>Score d'optimisation</span><span class="sc" id="score_val">—/100</span></div>
+        <div class="sb-track"><div class="sb-fill" id="score_fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="checklist" id="checklist"></div>
+    </div>
+  </div>
+</div>
+<footer>Générateur Description Vinted · Boostez vos ventes · Outil gratuit</footer>
+<script>
+document.querySelectorAll(".tag-opt").forEach(t=>{
+  t.addEventListener("click",()=>t.classList.toggle("active"));
+});
+
+function getPoints(){
+  const active=[];
+  document.querySelectorAll(".tag-opt.active").forEach(t=>active.push(t.dataset.val));
+  return active;
+}
+
+function generate(){
+  const type=document.getElementById("type").value;
+  const marque=document.getElementById("marque").value||"Sans marque";
+  const taille=document.getElementById("taille").value||"voir photos";
+  const couleur=document.getElementById("couleur").value||"";
+  const matiere=document.getElementById("matiere").value||"";
+  const etat=document.getElementById("etat").value;
+  const extra=document.getElementById("extra").value||"";
+  const points=getPoints();
+
+  const emoji={
+    "Veste / Manteau":"🧥","T-shirt / Haut":"👕","Pantalon / Jean":"👖",
+    "Robe / Jupe":"👗","Chaussures":"👟","Sac / Accessoire":"👜",
+    "Bijou":"💍","Sport":"⚽","Maison / Déco":"🏠","High-tech":"💻",
+    "Livre":"📚","Jouet / Enfant":"🧸"
+  };
+
+  const em=emoji[type]||"✨";
+  const matiereStr=matiere?`\nMatière : ${matiere}`:"";
+  const pointsStr=points.length>0?"\n\n✅ "+points.join("\n✅ "):"";
+  const extraStr=extra?`\n\n${extra}`:"";
+
+  const desc=`${em} ${marque.toUpperCase()} — ${type} ${couleur}
+
+📐 Taille : ${taille}${matiereStr}
+🏷️ État : ${etat.charAt(0).toUpperCase()+etat.slice(1)}
+${pointsStr}${extraStr}
+
+📦 Envoi soigné et rapide.
+💬 N'hésitez pas à me faire une offre ou à poser vos questions !`;
+
+  document.getElementById("desc_output").textContent=desc;
+
+  const checks=[
+    {label:"Marque mentionnée",ok:marque.length>2},
+    {label:"Taille indiquée",ok:taille.length>0},
+    {label:"État précisé",ok:true},
+    {label:"Matière renseignée",ok:matiere.length>0},
+    {label:"Points forts",ok:points.length>=2},
+    {label:"Appel à l'action",ok:true},
+    {label:"Infos supplémentaires",ok:extra.length>10},
+    {label:"Couleur indiquée",ok:couleur.length>0}
+  ];
+
+  const score=Math.round((checks.filter(c=>c.ok).length/checks.length)*100);
+  document.getElementById("score_val").textContent=score+"/100";
+  document.getElementById("score_fill").style.width=score+"%";
+
+  const cl=document.getElementById("checklist");
+  cl.innerHTML=checks.map(c=>`<div class="check-item"><div class="dot ${c.ok?'dot-ok':'dot-no'}"></div><span>${c.label}</span></div>`).join("");
+
+  document.getElementById("result_zone").classList.add("visible");
+  document.getElementById("result_zone").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function copyText(){
+  const text=document.getElementById("desc_output").textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelector(".copy-btn");
+    btn.textContent="Copié ✓";
+    setTimeout(()=>btn.textContent="Copier",2000);
+  });
+}
+</script>
+</body>
+</html>
